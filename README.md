@@ -6,6 +6,7 @@ This driver doesn't run jobs, it requires another driver to actually process job
 
 [![Latest Stable Version](https://poser.pugx.org/mcfedr/periodic-queue-driver-bundle/v/stable.png)](https://packagist.org/packages/mcfedr/periodic-queue-driver-bundle)
 [![License](https://poser.pugx.org/mcfedr/periodic-queue-driver-bundle/license.png)](https://packagist.org/packages/mcfedr/periodic-queue-driver-bundle)
+[![Build Status](https://travis-ci.org/mcfedr/periodic-queue-driver-bundle.svg?branch=master)](https://travis-ci.org/mcfedr/periodic-queue-driver-bundle)
 
 ## Install
 
