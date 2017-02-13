@@ -1,0 +1,38 @@
+framework:
+    test: ~
+    session:
+        storage_id: session.storage.mock_file
+    secret: 'fake_secret'
+
+mcfedr_queue_manager:
+    drivers:
+        test:
+            class: Mcfedr\PeriodicQueueDriverBundle\Manager\TestQueueManager
+    managers:
+        default:
+            driver: test
+        periodic:
+            driver: periodic
+
+monolog:
+    handlers:
+        main:
+            type: console
+            verbosity_levels:
+                VERBOSITY_NORMAL: DEBUG
+
+services:
+    test_worker:
+        class: Mcfedr\PeriodicQueueDriverBundle\Worker\TestWorker
+        arguments:
+            - "@logger"
+
+    test_periodic_distribution_command:
+        class: Mcfedr\PeriodicQueueDriverBundle\Command\TestPeriodicDistributionCommand
+        tags:
+            - { name: console.command }
+
+    test_rand_add_distribution_command:
+        class: Mcfedr\PeriodicQueueDriverBundle\Command\TestRandAddDistributionCommand
+        tags:
+            - { name: console.command }

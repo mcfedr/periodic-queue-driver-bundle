@@ -1,0 +1,6 @@
+services:
+    mcfedr_periodic_queue_driver.worker:
+        class: Mcfedr\PeriodicQueueDriverBundle\Worker\PeriodicWorker
+        arguments:
+            - "@mcfedr_queue_manager.registry"
+            - "@mcfedr_queue_manager.job_executor"

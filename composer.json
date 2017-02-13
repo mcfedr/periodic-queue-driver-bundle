@@ -1,0 +1,35 @@
+{
+    "name": "mcfedr/periodic-queue-driver-bundle",
+    "type": "symfony-bundle",
+    "description": "A bundle for running symfony background tasks with doctrine as the driver",
+    "keywords": ["queue", "job", "schedule", "task", "doctrine"],
+    "autoload": {
+        "psr-4": { "Mcfedr\\PeriodicQueueDriverBundle\\": "src/Mcfedr/PeriodicQueueDriverBundle/"}
+    },
+    "autoload-dev": {
+        "psr-4": { "Mcfedr\\PeriodicQueueDriverBundle\\" : "tests/Mcfedr/PeriodicQueueDriverBundle/" },
+        "classmap": ["tests/TestKernel.php"]
+    },
+    "require": {
+        "php": ">=5.5",
+        "symfony/symfony": "^2.8|^3.0",
+        "mcfedr/queue-manager-bundle": "^5.2"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^4.1",
+        "symfony/monolog-bundle": "^2.8|^3.0",
+        "friendsofphp/php-cs-fixer": "^2.1"
+    },
+    "authors": [
+        {
+            "name": "Fred Cox",
+            "email": "mcfedr@gmail.com"
+        }
+    ],
+    "license": "MIT",
+    "config": {
+        "platform": {
+            "php": "5.5.9"
+        }
+    }
+}
