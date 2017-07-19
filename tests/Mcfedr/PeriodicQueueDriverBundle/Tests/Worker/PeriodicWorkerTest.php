@@ -2,6 +2,7 @@
 
 namespace Mcfedr\PeriodicQueueDriverBundle\Tests\Worker;
 
+use Carbon\Carbon;
 use Mcfedr\PeriodicQueueDriverBundle\Worker\PeriodicWorker;
 use Mcfedr\QueueManagerBundle\Exception\UnrecoverableJobException;
 use Mcfedr\QueueManagerBundle\Manager\QueueManagerRegistry;
@@ -40,9 +41,7 @@ class PeriodicWorkerTest extends \PHPUnit_Framework_TestCase
 
     public function tearDown()
     {
-        if (function_exists('timecop_return')) {
-            timecop_return();
-        }
+        Carbon::setTestNow(null);
     }
 
     public function testExecute()
@@ -155,13 +154,10 @@ class PeriodicWorkerTest extends \PHPUnit_Framework_TestCase
      */
     public function testNextRun($length)
     {
-        if (function_exists('timecop_freeze')) {
-            // Make sure time doesnt move so seperate calls to nextPeriod give the same answer
-            timecop_freeze();
-        }
+        Carbon::setTestNow(Carbon::now());
         list($startOfNextPeriod, $endOfNextPeriod) = PeriodicWorker::nextPeriod($length);
-        $start = new \DateTime("@$startOfNextPeriod");
-        $end = new \DateTime("@$endOfNextPeriod");
+        $start = new Carbon("@$startOfNextPeriod");
+        $end = new Carbon("@$endOfNextPeriod");
 
         $test = PeriodicWorker::nextRun($length);
 
@@ -174,26 +170,23 @@ class PeriodicWorkerTest extends \PHPUnit_Framework_TestCase
      */
     public function testNextPeriod($length)
     {
-        if (!function_exists('timecop_freeze')) {
-            return;
-        }
-
-        $time = gmmktime(12, 0, 0);
-        timecop_freeze($time);
+        $timeObj = Carbon::createFromTime(12, 0, 0);
+        $time = $timeObj->getTimestamp();
+        Carbon::setTestNow($timeObj);
 
         list($startOfNextPeriod, $endOfNextPeriod) = PeriodicWorker::nextPeriod($length);
 
         $this->assertEquals($time + 1, $startOfNextPeriod);
         $this->assertEquals($time + $length, $endOfNextPeriod);
 
-        timecop_freeze($time + 1);
+        Carbon::setTestNow(Carbon::createFromTimestamp($time + 1));
 
         list($startOfNextPeriod, $endOfNextPeriod) = PeriodicWorker::nextPeriod($length);
 
         $this->assertEquals($time + $length + 1, $startOfNextPeriod);
         $this->assertEquals($time + $length + $length, $endOfNextPeriod);
 
-        timecop_freeze($time + 15);
+        Carbon::setTestNow(Carbon::createFromTimestamp($time + 15));
 
         list($startOfNextPeriod, $endOfNextPeriod) = PeriodicWorker::nextPeriod($length);
 

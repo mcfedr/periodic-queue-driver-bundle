@@ -2,6 +2,7 @@
 
 namespace Mcfedr\PeriodicQueueDriverBundle\Command;
 
+use Carbon\Carbon;
 use Mcfedr\PeriodicQueueDriverBundle\Worker\PeriodicWorker;
 
 class TestPeriodicDistributionCommand extends TestDistributionCommand
@@ -15,13 +16,13 @@ class TestPeriodicDistributionCommand extends TestDistributionCommand
 
     protected function job($period)
     {
-        $currentTime = 0;
+        $time = new Carbon();
 
-        return function () use (&$currentTime, $period) {
-            timecop_freeze($currentTime);
-            $currentTime = PeriodicWorker::nextRun($period)->getTimestamp();
+        return function () use (&$time, $period) {
+            Carbon::setTestNow($time);
+            $time = Carbon::createFromTimestamp(PeriodicWorker::nextRun($period)->getTimestamp());
 
-            return $currentTime;
+            return $time->timestamp;
         };
     }
 }

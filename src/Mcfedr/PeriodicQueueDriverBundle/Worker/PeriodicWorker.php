@@ -2,6 +2,7 @@
 
 namespace Mcfedr\PeriodicQueueDriverBundle\Worker;
 
+use Carbon\Carbon;
 use Mcfedr\PeriodicQueueDriverBundle\Queue\PeriodicJob;
 use Mcfedr\QueueManagerBundle\Exception\UnrecoverableJobException;
 use Mcfedr\QueueManagerBundle\Manager\QueueManagerRegistry;
@@ -49,17 +50,25 @@ class PeriodicWorker implements Worker
         ], $arguments['delay_options']), $arguments['delay_manager']);
     }
 
+    /**
+     * @param int $periodLength seconds
+     * @return \DateTime
+     */
     public static function nextRun($periodLength)
     {
         list($startOfNextPeriod, $endOfNextPeriod) = self::nextPeriod($periodLength);
         $time = random_int($startOfNextPeriod, $endOfNextPeriod);
 
-        return new \DateTime("@$time");
+        return new Carbon("@$time");
     }
 
+    /**
+     * @param int $periodLength seconds
+     * @return int[] 0 is start and 1 is the end as timestamps
+     */
     public static function nextPeriod($periodLength)
     {
-        $now = time();
+        $now = Carbon::now()->timestamp;
         $startOfNextPeriod = ceil($now / $periodLength) * $periodLength;
 
         return [$startOfNextPeriod + 1, $startOfNextPeriod + $periodLength];
