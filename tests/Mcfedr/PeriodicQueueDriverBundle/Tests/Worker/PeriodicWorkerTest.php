@@ -57,7 +57,7 @@ class PeriodicWorkerTest extends \PHPUnit_Framework_TestCase
                     return false;
                 }
                 if ($job->getArguments() != [
-                        'argument_a' => 'a'
+                        'argument_a' => 'a',
                     ]) {
                     return false;
                 }
@@ -72,13 +72,13 @@ class PeriodicWorkerTest extends \PHPUnit_Framework_TestCase
                 [
                     'name' => 'test_worker',
                     'arguments' => [
-                        'argument_a' => 'a'
+                        'argument_a' => 'a',
                     ],
                     'period' => 3600,
                     'delay_options' => [
-                        'delay_manager_option_a' => 'a'
+                        'delay_manager_option_a' => 'a',
                     ],
-                    'delay_manager' => 'delay'
+                    'delay_manager' => 'delay',
                 ],
                 $this->callback(function ($options) {
                     if (!is_array($options)) {
@@ -93,20 +93,20 @@ class PeriodicWorkerTest extends \PHPUnit_Framework_TestCase
 
                     return true;
                 }),
-                'delay'
+                'delay',
             ])
             ->willReturnOnConsecutiveCalls($this->getMockBuilder(Job::class)->getMock());
 
         $this->worker->execute([
             'name' => 'test_worker',
             'arguments' => [
-                'argument_a' => 'a'
+                'argument_a' => 'a',
             ],
             'period' => 3600,
             'delay_options' => [
-                'delay_manager_option_a' => 'a'
+                'delay_manager_option_a' => 'a',
             ],
-            'delay_manager' => 'delay'
+            'delay_manager' => 'delay',
         ]);
     }
 
@@ -125,7 +125,7 @@ class PeriodicWorkerTest extends \PHPUnit_Framework_TestCase
                     return false;
                 }
                 if ($job->getArguments() != [
-                        'argument_a' => 'a'
+                        'argument_a' => 'a',
                     ]) {
                     return false;
                 }
@@ -140,13 +140,13 @@ class PeriodicWorkerTest extends \PHPUnit_Framework_TestCase
         $this->worker->execute([
             'name' => 'test_worker',
             'arguments' => [
-                'argument_a' => 'a'
+                'argument_a' => 'a',
             ],
             'period' => 3600,
             'delay_options' => [
-                'delay_manager_option_a' => 'a'
+                'delay_manager_option_a' => 'a',
             ],
-            'delay_manager' => 'delay'
+            'delay_manager' => 'delay',
         ]);
     }
 
@@ -206,7 +206,7 @@ class PeriodicWorkerTest extends \PHPUnit_Framework_TestCase
         return [
             [3600],
             [100],
-            [50]
+            [50],
         ];
     }
 }

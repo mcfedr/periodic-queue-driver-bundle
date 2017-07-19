@@ -29,8 +29,8 @@ class PeriodicQueueManagerTest extends \PHPUnit_Framework_TestCase
         $this->manager = new PeriodicQueueManager([
             'delay_manager' => 'delay',
             'delay_manager_options' => [
-                'delay_manager_option_a' => 'a'
-            ]
+                'delay_manager_option_a' => 'a',
+            ],
         ]);
 
         $this->registry = $this->getMockBuilder(QueueManagerRegistry::class)
@@ -51,13 +51,13 @@ class PeriodicQueueManagerTest extends \PHPUnit_Framework_TestCase
             ->with('mcfedr_periodic_queue_driver.worker', [
                 'name' => 'test_worker',
                 'arguments' => [
-                    'argument_a' => 'a'
+                    'argument_a' => 'a',
                 ],
                 'period' => 3600,
                 'delay_options' => [
-                    'delay_manager_option_a' => 'a'
+                    'delay_manager_option_a' => 'a',
                 ],
-                'delay_manager' => 'delay'
+                'delay_manager' => 'delay',
             ], $this->callback(function ($options) {
                 if (!is_array($options)) {
                     return false;
@@ -74,7 +74,7 @@ class PeriodicQueueManagerTest extends \PHPUnit_Framework_TestCase
             ->willReturn($fakeJob);
 
         $job = $this->manager->put('test_worker', [
-            'argument_a' => 'a'
+            'argument_a' => 'a',
         ], ['period' => 3600]);
 
         $this->assertEquals($fakeJob, $job);
@@ -86,14 +86,14 @@ class PeriodicQueueManagerTest extends \PHPUnit_Framework_TestCase
         $this->registry->expects($this->once())
             ->method('put')
             ->with('test_worker', [
-                'argument_a' => 'a'
+                'argument_a' => 'a',
             ], [
-                'delay_manager_option_a' => 'a'
+                'delay_manager_option_a' => 'a',
             ], 'delay')
             ->willReturn($fakeJob);
 
         $job = $this->manager->put('test_worker', [
-            'argument_a' => 'a'
+            'argument_a' => 'a',
         ]);
 
         $this->assertEquals($fakeJob, $job);

@@ -24,7 +24,7 @@ class McfedrPeriodicQueueDriverExtension extends Extension implements PrependExt
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
-        $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
+        $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yml');
     }
 
@@ -45,10 +45,10 @@ class McfedrPeriodicQueueDriverExtension extends Extension implements PrependExt
                         'class' => PeriodicQueueManager::class,
                         'options' => [
                             'delay_manager' => null,
-                            'delay_manager_options' => []
-                        ]
-                    ]
-                ]
+                            'delay_manager_options' => [],
+                        ],
+                    ],
+                ],
             ]);
         }
     }

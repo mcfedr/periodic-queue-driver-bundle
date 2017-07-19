@@ -67,9 +67,9 @@ class PeriodicQueueManager implements QueueManager, ContainerAwareInterface
             'arguments' => $arguments,
             'period' => $period,
             'delay_options' => $jobOptions,
-            'delay_manager' => $jobManager
+            'delay_manager' => $jobManager,
         ], array_merge([
-            'time' => PeriodicWorker::nextRun($period)
+            'time' => PeriodicWorker::nextRun($period),
         ], $jobOptions), $jobManager);
     }
 
