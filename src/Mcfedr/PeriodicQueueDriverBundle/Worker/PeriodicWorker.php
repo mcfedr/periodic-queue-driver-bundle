@@ -52,6 +52,7 @@ class PeriodicWorker implements Worker
 
     /**
      * @param int $periodLength seconds
+     *
      * @return \DateTime
      */
     public static function nextRun($periodLength)
@@ -64,6 +65,7 @@ class PeriodicWorker implements Worker
 
     /**
      * @param int $periodLength seconds
+     *
      * @return int[] 0 is start and 1 is the end as timestamps
      */
     public static function nextPeriod($periodLength)
