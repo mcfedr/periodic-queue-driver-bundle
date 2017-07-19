@@ -8,6 +8,11 @@ This driver doesn't run jobs, it requires another driver to actually process job
 [![License](https://poser.pugx.org/mcfedr/periodic-queue-driver-bundle/license.png)](https://packagist.org/packages/mcfedr/periodic-queue-driver-bundle)
 [![Build Status](https://travis-ci.org/mcfedr/periodic-queue-driver-bundle.svg?branch=master)](https://travis-ci.org/mcfedr/periodic-queue-driver-bundle)
 
+## Usage
+
+There is no runner daemon for this driver as it just plugs into other drivers. Use it by
+`put`ting jobs into this driver with the `period` option.
+
 ## Install
 
 ### Composer
