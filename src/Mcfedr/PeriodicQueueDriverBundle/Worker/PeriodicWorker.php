@@ -6,8 +6,10 @@ use Carbon\Carbon;
 use Mcfedr\PeriodicQueueDriverBundle\Queue\PeriodicJob;
 use Mcfedr\QueueManagerBundle\Exception\UnrecoverableJobException;
 use Mcfedr\QueueManagerBundle\Manager\QueueManagerRegistry;
+use Mcfedr\QueueManagerBundle\Queue\Job;
 use Mcfedr\QueueManagerBundle\Queue\Worker;
 use Mcfedr\QueueManagerBundle\Runner\JobExecutor;
+use Ramsey\Uuid\Uuid;
 
 class PeriodicWorker implements Worker
 {
@@ -31,6 +33,7 @@ class PeriodicWorker implements Worker
      * Called to start the queued task.
      *
      * @param array $arguments
+     * @return Job
      *
      * @throws \Exception
      * @throws UnrecoverableJobException
@@ -45,7 +48,10 @@ class PeriodicWorker implements Worker
         $this->jobExecutor->executeJob($job);
 
         $nextRun = self::nextRun($arguments['period']);
-        $this->queueManagerRegistry->put('mcfedr_periodic_queue_driver.worker', $arguments, array_merge([
+        $arguments['arguments']['ping_token'] = $arguments['arguments']['next_ping_token'];
+        $arguments['arguments']['next_ping_token'] = Uuid::uuid4()->toString();
+
+        return $this->queueManagerRegistry->put('mcfedr_periodic_queue_driver.worker', $arguments, array_merge([
             'time' => $nextRun,
         ], $arguments['delay_options']), $arguments['delay_manager']);
     }

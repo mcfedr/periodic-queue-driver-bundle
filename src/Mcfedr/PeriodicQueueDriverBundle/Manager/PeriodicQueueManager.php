@@ -61,6 +61,7 @@ class PeriodicQueueManager implements QueueManager, ContainerAwareInterface
         } else {
             return $this->container->get('mcfedr_queue_manager.registry')->put($name, $arguments, $jobOptions, $jobManager);
         }
+        $arguments['ping_token'] = $arguments['next_ping_token'] = Uuid::uuid4()->toString();
 
         return $this->container->get('mcfedr_queue_manager.registry')->put('mcfedr_periodic_queue_driver.worker', [
             'name' => $name,
