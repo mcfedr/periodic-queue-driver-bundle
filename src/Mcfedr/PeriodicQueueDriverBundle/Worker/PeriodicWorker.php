@@ -6,10 +6,10 @@ use Carbon\Carbon;
 use Mcfedr\PeriodicQueueDriverBundle\Queue\PeriodicJob;
 use Mcfedr\QueueManagerBundle\Exception\UnrecoverableJobException;
 use Mcfedr\QueueManagerBundle\Manager\QueueManagerRegistry;
-use Mcfedr\QueueManagerBundle\Queue\Worker;
+use Mcfedr\QueueManagerBundle\Queue\InternalWorker;
 use Mcfedr\QueueManagerBundle\Runner\JobExecutor;
 
-class PeriodicWorker implements Worker
+class PeriodicWorker implements InternalWorker
 {
     /**
      * @var QueueManagerRegistry
