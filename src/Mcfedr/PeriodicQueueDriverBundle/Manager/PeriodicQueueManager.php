@@ -2,6 +2,7 @@
 
 namespace Mcfedr\PeriodicQueueDriverBundle\Manager;
 
+use Mcfedr\PeriodicQueueDriverBundle\Queue\PeriodicJob;
 use Mcfedr\PeriodicQueueDriverBundle\Worker\PeriodicWorker;
 use Mcfedr\QueueManagerBundle\Exception\NoSuchJobException;
 use Mcfedr\QueueManagerBundle\Exception\WrongJobException;
@@ -61,9 +62,13 @@ class PeriodicQueueManager implements QueueManager, ContainerAwareInterface
         } else {
             return $this->container->get('mcfedr_queue_manager.registry')->put($name, $arguments, $jobOptions, $jobManager);
         }
-        $arguments['ping_token'] = $arguments['next_ping_token'] = Uuid::uuid4()->toString();
 
-        return $this->container->get('mcfedr_queue_manager.registry')->put('mcfedr_periodic_queue_driver.worker', [
+        $periodicJob = new PeriodicJob($name, $arguments);
+        $periodicJob->generateTokens();
+        $arguments['job_token'] = $periodicJob->getJobToken();
+        $arguments['next_job_token'] = $periodicJob->getJobToken();
+
+        $this->container->get('mcfedr_queue_manager.registry')->put('mcfedr_periodic_queue_driver.worker', [
             'name' => $name,
             'arguments' => $arguments,
             'period' => $period,
@@ -72,6 +77,8 @@ class PeriodicQueueManager implements QueueManager, ContainerAwareInterface
         ], array_merge([
             'time' => PeriodicWorker::nextRun($period),
         ], $jobOptions), $jobManager);
+
+        return $periodicJob;
     }
 
     /**

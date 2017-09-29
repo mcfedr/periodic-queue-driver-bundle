@@ -3,8 +3,10 @@
 namespace Mcfedr\PeriodicQueueDriverBundle\Tests\Manager;
 
 use Mcfedr\PeriodicQueueDriverBundle\Manager\PeriodicQueueManager;
+use Mcfedr\PeriodicQueueDriverBundle\Queue\PeriodicJob;
 use Mcfedr\QueueManagerBundle\Manager\QueueManagerRegistry;
 use Mcfedr\QueueManagerBundle\Queue\Job;
+use Ramsey\Uuid\Uuid;
 use Symfony\Component\DependencyInjection\Container;
 
 class PeriodicQueueManagerTest extends \PHPUnit_Framework_TestCase
@@ -45,39 +47,58 @@ class PeriodicQueueManagerTest extends \PHPUnit_Framework_TestCase
 
     public function testPut()
     {
+        $pattern = '/[a-f0-9]{8}\-[a-f0-9]{4}\-[a-f0-9]{4}\-[a-f0-9]{4}\-[a-f0-9]{12}/';
         $fakeJob = $this->getMockBuilder(Job::class)->getMock();
         $this->registry->expects($this->once())
             ->method('put')
-            ->with('mcfedr_periodic_queue_driver.worker', [
-                'name' => 'test_worker',
-                'arguments' => [
-                    'argument_a' => 'a',
-                ],
-                'period' => 3600,
-                'delay_options' => [
-                    'delay_manager_option_a' => 'a',
-                ],
-                'delay_manager' => 'delay',
-            ], $this->callback(function ($options) {
-                if (!is_array($options)) {
-                    return false;
-                }
-                if (!isset($options['delay_manager_option_a']) || $options['delay_manager_option_a'] != 'a') {
-                    return false;
-                }
-                if (!isset($options['time']) || !$options['time'] instanceof \DateTime) {
-                    return false;
-                }
+            ->with('mcfedr_periodic_queue_driver.worker',
+                $this->callback(function ($arguments) use($pattern) {
+                    $this->assertCount(5, $arguments);
+                    $this->assertArrayHasKey('name', $arguments);
+                    $this->assertEquals('test_worker', $arguments['name']);
+                    $this->assertArrayHasKey('arguments', $arguments);
+                    $this->assertCount(3, $arguments['arguments']);
 
-                return true;
-            }), 'delay')
+                    $this->assertArrayHasKey('argument_a', $arguments['arguments']);
+                    $this->assertEquals('a', $arguments['arguments']['argument_a']);
+                    $this->assertArrayHasKey('job_token', $arguments['arguments']);
+                    $this->assertRegExp($pattern, $arguments['arguments']['job_token']);
+                    $this->assertArrayHasKey('next_job_token', $arguments['arguments']);
+                    $this->assertRegExp($pattern, $arguments['arguments']['next_job_token']);
+
+                    $this->assertArrayHasKey('period', $arguments);
+                    $this->assertEquals(3600, $arguments['period']);
+                    $this->assertArrayHasKey('delay_options', $arguments);
+                    $this->assertCount(1, $arguments['delay_options']);
+                    $this->assertArrayHasKey('delay_manager_option_a', $arguments['delay_options']);
+                    $this->assertEquals('a', $arguments['delay_options']['delay_manager_option_a']);
+                    $this->assertArrayHasKey('delay_manager', $arguments);
+                    $this->assertEquals('delay', $arguments['delay_manager']);
+
+                    return true;
+                }),
+                $this->callback(function ($options) {
+                    if (!is_array($options)) {
+                        return false;
+                    }
+                    if (!isset($options['delay_manager_option_a']) || $options['delay_manager_option_a'] != 'a') {
+                        return false;
+                    }
+                    if (!isset($options['time']) || !$options['time'] instanceof \DateTime) {
+                        return false;
+                    }
+
+                    return true;
+                }), 'delay')
             ->willReturn($fakeJob);
 
         $job = $this->manager->put('test_worker', [
             'argument_a' => 'a',
         ], ['period' => 3600]);
 
-        $this->assertEquals($fakeJob, $job);
+        $this->assertInstanceOf(PeriodicJob::class, $job);
+        $this->assertRegExp($pattern, $job->getJobToken());
+        $this->assertRegExp($pattern, $job->getNextJobToken());
     }
 
     public function testNoPeriod()
