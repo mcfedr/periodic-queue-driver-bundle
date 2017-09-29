@@ -46,12 +46,11 @@ class PeriodicQueueManagerTest extends \PHPUnit_Framework_TestCase
 
     public function testPut()
     {
-        $pattern = '/[a-f0-9]{8}\-[a-f0-9]{4}\-[a-f0-9]{4}\-[a-f0-9]{4}\-[a-f0-9]{12}/';
         $fakeJob = $this->getMockBuilder(Job::class)->getMock();
         $this->registry->expects($this->once())
             ->method('put')
             ->with('mcfedr_periodic_queue_driver.worker',
-                $this->callback(function ($arguments) use ($pattern) {
+                $this->callback(function ($arguments) {
                     $this->assertCount(6, $arguments);
                     $this->assertArrayHasKey('name', $arguments);
                     $this->assertEquals('test_worker', $arguments['name']);
@@ -64,9 +63,9 @@ class PeriodicQueueManagerTest extends \PHPUnit_Framework_TestCase
                     $this->assertArrayHasKey('job_tokens', $arguments);
                     $this->assertCount(2, $arguments['job_tokens']);
                     $this->assertArrayHasKey('token', $arguments['job_tokens']);
-                    $this->assertRegExp($pattern, $arguments['job_tokens']['token']);
+                    $this->assertNotEmpty($arguments['job_tokens']['token']);
                     $this->assertArrayHasKey('next_token', $arguments['job_tokens']);
-                    $this->assertRegExp($pattern, $arguments['job_tokens']['next_token']);
+                    $this->assertNotEmpty($arguments['job_tokens']['next_token']);
 
                     $this->assertArrayHasKey('period', $arguments);
                     $this->assertEquals(3600, $arguments['period']);
@@ -99,7 +98,7 @@ class PeriodicQueueManagerTest extends \PHPUnit_Framework_TestCase
         ], ['period' => 3600]);
 
         $this->assertInstanceOf(PeriodicJob::class, $job);
-        $this->assertRegExp($pattern, $job->getJobToken());
+        $this->assertNotEmpty($job->getJobToken());
     }
 
     public function testNoPeriod()

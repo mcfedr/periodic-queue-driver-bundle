@@ -85,10 +85,9 @@ class PeriodicWorkerTest extends \PHPUnit_Framework_TestCase
                     $this->assertArrayHasKey('job_tokens', $arguments);
                     $this->assertCount(2, $arguments['job_tokens']);
                     $this->assertArrayHasKey('token', $arguments['job_tokens']);
-                    $pattern = '/[a-f0-9]{8}\-[a-f0-9]{4}\-[a-f0-9]{4}\-[a-f0-9]{4}\-[a-f0-9]{12}/';
-                    $this->assertRegExp($pattern, $arguments['job_tokens']['token']);
+                    $this->assertNotEmpty($arguments['job_tokens']['token']);
                     $this->assertArrayHasKey('next_token', $arguments['job_tokens']);
-                    $this->assertRegExp($pattern, $arguments['job_tokens']['next_token']);
+                    $this->assertNotEmpty($arguments['job_tokens']['next_token']);
 
                     $this->assertArrayHasKey('period', $arguments);
                     $this->assertEquals(3600, $arguments['period']);
