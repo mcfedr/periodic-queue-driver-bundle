@@ -71,3 +71,40 @@ pipe into [feedgnuplot](https://github.com/dkogan/feedgnuplot).
     ./tests/console test:distribution:periodic -v | feedgnuplot --histogram 0 --binwidth 60 --hardcopy "periodic.png" --exit
 
 ![Graph of periodic](periodic.png)
+
+## Job Token
+
+There is job_tokens argument which can help with job uniqueness.
+
+Usage example
+
+When put new periodic job, you get PeriodicJob object.
+
+        $periodicJob = $this->manager->put('some_service', [
+            'some_argument' => 'some_value',
+            'ping_period' => 'some_period',
+        ], [
+            'period' => 'some_seconds',
+        ], 'periodic');
+        
+You can do $periodicJob->getToken() of it and store the token for job execution
+
+While execution
+
+     public function execute(array $arguments)
+        {
+            // Get the storred token
+            ...
+    
+            if ($storredToken != $arguments['job_tokens']['token']) {
+                throw new InvalidTokenException();
+            }
+            
+            ...
+            
+            $storredToken = ($arguments['job_tokens']['next_token']);
+
+            // Save storred token for next execition.
+        }
+        
+Each job execution new token is generated so if some job duplication will appear only one will be executed and other jobs will fail
