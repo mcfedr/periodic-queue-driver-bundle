@@ -7,6 +7,7 @@ use Mcfedr\PeriodicQueueDriverBundle\Queue\PeriodicJob;
 use Mcfedr\QueueManagerBundle\Exception\UnrecoverableJobException;
 use Mcfedr\QueueManagerBundle\Manager\QueueManagerRegistry;
 use Mcfedr\QueueManagerBundle\Queue\InternalWorker;
+use Mcfedr\QueueManagerBundle\Queue\Job;
 use Mcfedr\QueueManagerBundle\Runner\JobExecutor;
 
 class PeriodicWorker implements InternalWorker
@@ -31,6 +32,7 @@ class PeriodicWorker implements InternalWorker
      * Called to start the queued task.
      *
      * @param array $arguments
+     * @return Job
      *
      * @throws \Exception
      * @throws UnrecoverableJobException
@@ -41,10 +43,18 @@ class PeriodicWorker implements InternalWorker
             throw new UnrecoverableJobException('Missing arguments for periodic job');
         }
 
-        $job = new PeriodicJob($arguments['name'], $arguments['arguments']);
+        if (!isset($arguments['job_tokens'])) {
+            $arguments['job_tokens'] = PeriodicJob::generateJobTokens();
+        }
+
+        $job = new PeriodicJob($arguments['name'], $arguments['arguments'], $arguments['job_tokens']);
         $this->jobExecutor->executeJob($job);
 
+        $nextJob = $job->generateNextJob();
+        $arguments['job_tokens'] = $nextJob->getJobTokens();
+
         $nextRun = self::nextRun($arguments['period']);
+
         $this->queueManagerRegistry->put('mcfedr_periodic_queue_driver.worker', $arguments, array_merge([
             'time' => $nextRun,
         ], $arguments['delay_options']), $arguments['delay_manager']);

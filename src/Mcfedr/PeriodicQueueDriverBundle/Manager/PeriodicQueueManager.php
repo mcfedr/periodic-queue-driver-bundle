@@ -2,6 +2,7 @@
 
 namespace Mcfedr\PeriodicQueueDriverBundle\Manager;
 
+use Mcfedr\PeriodicQueueDriverBundle\Queue\PeriodicJob;
 use Mcfedr\PeriodicQueueDriverBundle\Worker\PeriodicWorker;
 use Mcfedr\QueueManagerBundle\Exception\NoSuchJobException;
 use Mcfedr\QueueManagerBundle\Exception\WrongJobException;
@@ -62,15 +63,20 @@ class PeriodicQueueManager implements QueueManager, ContainerAwareInterface
             return $this->container->get('mcfedr_queue_manager.registry')->put($name, $arguments, $jobOptions, $jobManager);
         }
 
-        return $this->container->get('mcfedr_queue_manager.registry')->put('mcfedr_periodic_queue_driver.worker', [
+        $periodicJob = new PeriodicJob($name, $arguments, PeriodicJob::generateJobTokens());
+
+        $this->container->get('mcfedr_queue_manager.registry')->put('mcfedr_periodic_queue_driver.worker', [
             'name' => $name,
             'arguments' => $arguments,
             'period' => $period,
+            'job_tokens' => $periodicJob->getJobTokens(),
             'delay_options' => $jobOptions,
             'delay_manager' => $jobManager,
         ], array_merge([
             'time' => PeriodicWorker::nextRun($period),
         ], $jobOptions), $jobManager);
+
+        return $periodicJob;
     }
 
     /**
