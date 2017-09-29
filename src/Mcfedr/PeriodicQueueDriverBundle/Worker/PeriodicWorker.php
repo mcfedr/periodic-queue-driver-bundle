@@ -6,11 +6,11 @@ use Carbon\Carbon;
 use Mcfedr\PeriodicQueueDriverBundle\Queue\PeriodicJob;
 use Mcfedr\QueueManagerBundle\Exception\UnrecoverableJobException;
 use Mcfedr\QueueManagerBundle\Manager\QueueManagerRegistry;
+use Mcfedr\QueueManagerBundle\Queue\InternalWorker;
 use Mcfedr\QueueManagerBundle\Queue\Job;
-use Mcfedr\QueueManagerBundle\Queue\Worker;
 use Mcfedr\QueueManagerBundle\Runner\JobExecutor;
 
-class PeriodicWorker implements Worker
+class PeriodicWorker implements InternalWorker
 {
     /**
      * @var QueueManagerRegistry
@@ -54,7 +54,7 @@ class PeriodicWorker implements Worker
         $arguments['job_tokens'] = $nextJob->getJobTokens();
 
         $nextRun = self::nextRun($arguments['period']);
-        
+
         $this->queueManagerRegistry->put('mcfedr_periodic_queue_driver.worker', $arguments, array_merge([
             'time' => $nextRun,
         ], $arguments['delay_options']), $arguments['delay_manager']);
