@@ -6,7 +6,6 @@ use Mcfedr\PeriodicQueueDriverBundle\Manager\PeriodicQueueManager;
 use Mcfedr\PeriodicQueueDriverBundle\Queue\PeriodicJob;
 use Mcfedr\QueueManagerBundle\Manager\QueueManagerRegistry;
 use Mcfedr\QueueManagerBundle\Queue\Job;
-use Ramsey\Uuid\Uuid;
 use Symfony\Component\DependencyInjection\Container;
 
 class PeriodicQueueManagerTest extends \PHPUnit_Framework_TestCase
@@ -52,19 +51,22 @@ class PeriodicQueueManagerTest extends \PHPUnit_Framework_TestCase
         $this->registry->expects($this->once())
             ->method('put')
             ->with('mcfedr_periodic_queue_driver.worker',
-                $this->callback(function ($arguments) use($pattern) {
-                    $this->assertCount(5, $arguments);
+                $this->callback(function ($arguments) use ($pattern) {
+                    $this->assertCount(6, $arguments);
                     $this->assertArrayHasKey('name', $arguments);
                     $this->assertEquals('test_worker', $arguments['name']);
                     $this->assertArrayHasKey('arguments', $arguments);
-                    $this->assertCount(3, $arguments['arguments']);
+                    $this->assertCount(1, $arguments['arguments']);
 
                     $this->assertArrayHasKey('argument_a', $arguments['arguments']);
                     $this->assertEquals('a', $arguments['arguments']['argument_a']);
-                    $this->assertArrayHasKey('job_token', $arguments['arguments']);
-                    $this->assertRegExp($pattern, $arguments['arguments']['job_token']);
-                    $this->assertArrayHasKey('next_job_token', $arguments['arguments']);
-                    $this->assertRegExp($pattern, $arguments['arguments']['next_job_token']);
+
+                    $this->assertArrayHasKey('job_tokens', $arguments);
+                    $this->assertCount(2, $arguments['job_tokens']);
+                    $this->assertArrayHasKey('token', $arguments['job_tokens']);
+                    $this->assertRegExp($pattern, $arguments['job_tokens']['token']);
+                    $this->assertArrayHasKey('next_token', $arguments['job_tokens']);
+                    $this->assertRegExp($pattern, $arguments['job_tokens']['next_token']);
 
                     $this->assertArrayHasKey('period', $arguments);
                     $this->assertEquals(3600, $arguments['period']);

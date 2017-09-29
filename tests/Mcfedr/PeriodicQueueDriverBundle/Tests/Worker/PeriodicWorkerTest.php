@@ -57,6 +57,10 @@ class PeriodicWorkerTest extends \PHPUnit_Framework_TestCase
                 }
                 if ($job->getArguments() != [
                         'argument_a' => 'a',
+                        'job_tokens' => [
+                            'token' => 'aaaaaaaa-bbbb-cccc-dddd-aabbccddeeff',
+                            'next_token' => 'aaaaaaaa-bbbb-cccc-dddd-aabbccddeef1',
+                        ],
                     ]) {
                     return false;
                 }
@@ -68,17 +72,35 @@ class PeriodicWorkerTest extends \PHPUnit_Framework_TestCase
             ->method('put')
             ->withConsecutive([
                 'mcfedr_periodic_queue_driver.worker',
-                [
-                    'name' => 'test_worker',
-                    'arguments' => [
-                        'argument_a' => 'a',
-                    ],
-                    'period' => 3600,
-                    'delay_options' => [
-                        'delay_manager_option_a' => 'a',
-                    ],
-                    'delay_manager' => 'delay',
-                ],
+                $this->callback(function ($arguments) {
+                    $this->assertCount(6, $arguments);
+                    $this->assertArrayHasKey('name', $arguments);
+                    $this->assertEquals('test_worker', $arguments['name']);
+                    $this->assertArrayHasKey('arguments', $arguments);
+                    $this->assertCount(1, $arguments['arguments']);
+
+                    $this->assertArrayHasKey('argument_a', $arguments['arguments']);
+                    $this->assertEquals('a', $arguments['arguments']['argument_a']);
+
+                    $this->assertArrayHasKey('job_tokens', $arguments);
+                    $this->assertCount(2, $arguments['job_tokens']);
+                    $this->assertArrayHasKey('token', $arguments['job_tokens']);
+                    $pattern = '/[a-f0-9]{8}\-[a-f0-9]{4}\-[a-f0-9]{4}\-[a-f0-9]{4}\-[a-f0-9]{12}/';
+                    $this->assertRegExp($pattern, $arguments['job_tokens']['token']);
+                    $this->assertArrayHasKey('next_token', $arguments['job_tokens']);
+                    $this->assertRegExp($pattern, $arguments['job_tokens']['next_token']);
+
+                    $this->assertArrayHasKey('period', $arguments);
+                    $this->assertEquals(3600, $arguments['period']);
+                    $this->assertArrayHasKey('delay_options', $arguments);
+                    $this->assertCount(1, $arguments['delay_options']);
+                    $this->assertArrayHasKey('delay_manager_option_a', $arguments['delay_options']);
+                    $this->assertEquals('a', $arguments['delay_options']['delay_manager_option_a']);
+                    $this->assertArrayHasKey('delay_manager', $arguments);
+                    $this->assertEquals('delay', $arguments['delay_manager']);
+
+                    return true;
+                }),
                 $this->callback(function ($options) {
                     if (!is_array($options)) {
                         return false;
@@ -100,6 +122,10 @@ class PeriodicWorkerTest extends \PHPUnit_Framework_TestCase
             'name' => 'test_worker',
             'arguments' => [
                 'argument_a' => 'a',
+            ],
+            'job_tokens' => [
+                'token' => 'aaaaaaaa-bbbb-cccc-dddd-aabbccddeeff',
+                'next_token' => 'aaaaaaaa-bbbb-cccc-dddd-aabbccddeef1',
             ],
             'period' => 3600,
             'delay_options' => [
@@ -125,6 +151,10 @@ class PeriodicWorkerTest extends \PHPUnit_Framework_TestCase
                 }
                 if ($job->getArguments() != [
                         'argument_a' => 'a',
+                        'job_tokens' => [
+                            'token' => 'aaaaaaaa-bbbb-cccc-dddd-aabbccddeeff',
+                            'next_token' => 'aaaaaaaa-bbbb-cccc-dddd-aabbccddeef1',
+                        ],
                     ]) {
                     return false;
                 }
@@ -140,6 +170,10 @@ class PeriodicWorkerTest extends \PHPUnit_Framework_TestCase
             'name' => 'test_worker',
             'arguments' => [
                 'argument_a' => 'a',
+            ],
+            'job_tokens' => [
+                'token' => 'aaaaaaaa-bbbb-cccc-dddd-aabbccddeeff',
+                'next_token' => 'aaaaaaaa-bbbb-cccc-dddd-aabbccddeef1',
             ],
             'period' => 3600,
             'delay_options' => [
