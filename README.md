@@ -82,7 +82,6 @@ When put new periodic job, you get PeriodicJob object.
 
         $periodicJob = $this->manager->put('some_service', [
             'some_argument' => 'some_value',
-            'ping_period' => 'some_period',
         ], [
             'period' => 'some_seconds',
         ], 'periodic');
@@ -93,18 +92,18 @@ While execution
 
      public function execute(array $arguments)
         {
-            // Get the storred token
+            // Get the stored token
             ...
     
-            if ($storredToken != $arguments['job_tokens']['token']) {
+            if ($storedToken != $arguments['job_tokens']['token']) {
                 throw new InvalidTokenException();
             }
             
             ...
             
-            $storredToken = ($arguments['job_tokens']['next_token']);
+            $storedToken = ($arguments['job_tokens']['next_token']);
 
-            // Save storred token for next execition.
+            // Save stored token for next execition.
         }
         
 Each job execution new token is generated so if some job duplication will appear only one will be executed and other jobs will fail
