@@ -8,44 +8,66 @@ use Ramsey\Uuid\Uuid;
 class PeriodicJob extends AbstractJob
 {
     /**
-     * @var string
+     * @var array
      */
-    private $jobToken;
+    private $jobTokens;
 
     /**
-     * @var string
+     * @param string $name
+     * @param array $arguments
+     * @param array $jobTokens
      */
-    private $nextJobToken;
-
+    public function __construct($name, array $arguments, array $jobTokens)
+    {
+        parent::__construct($name, $arguments);
+        $this->jobTokens = $jobTokens;
+    }
 
     /**
-     * Get JobToken.
+     * Generate tokens for a new job
      *
+     * @return array
+     */
+    public static function generateJobTokens()
+    {
+        return [
+            'token' => Uuid::uuid4()->toString(),
+            'next_token' => Uuid::uuid4()->toString(),
+        ];
+    }
+
+    /**
      * @return string
      */
     public function getJobToken()
     {
-        return $this->jobToken;
+        return $this->jobTokens['token'];
+    }
+
+    public function getArguments()
+    {
+        return array_merge(parent::getArguments(), ['job_tokens' => $this->getJobTokens()]);
     }
 
     /**
-     * Get NextJobToken.
+     * Get the next run of this job
      *
-     * @return string
+     * @return PeriodicJob
      */
-    public function getNextJobToken()
+    public function generateNextJob()
     {
-        return $this->nextJobToken;
+        $tokens = $this->getJobTokens();
+        $tokens['token'] = $tokens['next_token'];
+        $tokens['next_token'] = Uuid::uuid4()->toString();
+
+        return new PeriodicJob($this->getName(), $this->getArguments(), $tokens);
     }
 
-    public function generateTokens()
+    /**
+     * @return array
+     */
+    public function getJobTokens()
     {
-        $this->jobToken = $this->nextJobToken = Uuid::uuid4()->toString();
-    }
-
-    public function updateTokens()
-    {
-        $this->jobToken = $this->nextJobToken;
-        $this->nextJobToken = Uuid::uuid4()->toString();
+        return $this->jobTokens;
     }
 }

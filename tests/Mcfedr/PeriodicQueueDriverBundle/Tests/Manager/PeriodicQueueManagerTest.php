@@ -98,7 +98,6 @@ class PeriodicQueueManagerTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf(PeriodicJob::class, $job);
         $this->assertRegExp($pattern, $job->getJobToken());
-        $this->assertRegExp($pattern, $job->getNextJobToken());
     }
 
     public function testNoPeriod()
