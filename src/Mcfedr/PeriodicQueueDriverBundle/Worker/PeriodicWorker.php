@@ -32,6 +32,7 @@ class PeriodicWorker implements InternalWorker
      * Called to start the queued task.
      *
      * @param array $arguments
+     *
      * @return Job
      *
      * @throws \Exception

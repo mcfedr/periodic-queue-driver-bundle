@@ -14,8 +14,8 @@ class PeriodicJob extends AbstractJob
 
     /**
      * @param string $name
-     * @param array $arguments
-     * @param array $jobTokens
+     * @param array  $arguments
+     * @param array  $jobTokens
      */
     public function __construct($name, array $arguments, array $jobTokens)
     {
@@ -24,7 +24,7 @@ class PeriodicJob extends AbstractJob
     }
 
     /**
-     * Generate tokens for a new job
+     * Generate tokens for a new job.
      *
      * @return array
      */
@@ -50,7 +50,7 @@ class PeriodicJob extends AbstractJob
     }
 
     /**
-     * Get the next run of this job
+     * Get the next run of this job.
      *
      * @return PeriodicJob
      */
@@ -60,7 +60,7 @@ class PeriodicJob extends AbstractJob
         $tokens['token'] = $tokens['next_token'];
         $tokens['next_token'] = Uuid::uuid4()->toString();
 
-        return new PeriodicJob($this->getName(), $this->getArguments(), $tokens);
+        return new self($this->getName(), $this->getArguments(), $tokens);
     }
 
     /**
