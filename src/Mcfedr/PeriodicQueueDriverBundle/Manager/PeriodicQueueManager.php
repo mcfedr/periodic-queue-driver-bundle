@@ -65,7 +65,7 @@ class PeriodicQueueManager implements QueueManager, ContainerAwareInterface
 
         $periodicJob = new PeriodicJob($name, $arguments, PeriodicJob::generateJobTokens());
 
-        $this->container->get('mcfedr_queue_manager.registry')->put('mcfedr_periodic_queue_driver.worker', [
+        $this->container->get('mcfedr_queue_manager.registry')->put(PeriodicWorker::class, [
             'name' => $name,
             'arguments' => $arguments,
             'period' => $period,

@@ -71,7 +71,7 @@ class PeriodicWorkerTest extends \PHPUnit_Framework_TestCase
         $this->registry->expects($this->once())
             ->method('put')
             ->withConsecutive([
-                'mcfedr_periodic_queue_driver.worker',
+                PeriodicWorker::class,
                 $this->callback(function ($arguments) {
                     $this->assertCount(6, $arguments);
                     $this->assertArrayHasKey('name', $arguments);

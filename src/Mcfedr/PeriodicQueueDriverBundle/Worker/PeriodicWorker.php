@@ -56,7 +56,7 @@ class PeriodicWorker implements InternalWorker
 
         $nextRun = self::nextRun($arguments['period']);
 
-        $this->queueManagerRegistry->put('mcfedr_periodic_queue_driver.worker', $arguments, array_merge([
+        $this->queueManagerRegistry->put(self::class, $arguments, array_merge([
             'time' => $nextRun,
         ], $arguments['delay_options']), $arguments['delay_manager']);
     }

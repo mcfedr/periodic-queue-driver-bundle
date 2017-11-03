@@ -4,6 +4,7 @@ namespace Mcfedr\PeriodicQueueDriverBundle\Tests\Manager;
 
 use Mcfedr\PeriodicQueueDriverBundle\Manager\PeriodicQueueManager;
 use Mcfedr\PeriodicQueueDriverBundle\Queue\PeriodicJob;
+use Mcfedr\PeriodicQueueDriverBundle\Worker\PeriodicWorker;
 use Mcfedr\QueueManagerBundle\Manager\QueueManagerRegistry;
 use Mcfedr\QueueManagerBundle\Queue\Job;
 use Symfony\Component\DependencyInjection\Container;
@@ -49,7 +50,8 @@ class PeriodicQueueManagerTest extends \PHPUnit_Framework_TestCase
         $fakeJob = $this->getMockBuilder(Job::class)->getMock();
         $this->registry->expects($this->once())
             ->method('put')
-            ->with('mcfedr_periodic_queue_driver.worker',
+            ->with(
+                PeriodicWorker::class,
                 $this->callback(function ($arguments) {
                     $this->assertCount(6, $arguments);
                     $this->assertArrayHasKey('name', $arguments);
