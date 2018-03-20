@@ -1,9 +1,11 @@
 services:
     Mcfedr\PeriodicQueueDriverBundle\Worker\PeriodicWorker:
         class: Mcfedr\PeriodicQueueDriverBundle\Worker\PeriodicWorker
+        public: true
         arguments:
             - "@mcfedr_queue_manager.registry"
             - "@mcfedr_queue_manager.job_executor"
 
     mcfedr_periodic_queue_driver.worker:
         alias: Mcfedr\PeriodicQueueDriverBundle\Worker\PeriodicWorker
+        public: true
