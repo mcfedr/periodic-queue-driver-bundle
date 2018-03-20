@@ -52,7 +52,7 @@ class PeriodicWorkerTest extends \PHPUnit_Framework_TestCase
                 if (!$job instanceof Job) {
                     return false;
                 }
-                if ($job->getName() != 'test_worker') {
+                if ('test_worker' != $job->getName()) {
                     return false;
                 }
                 if ($job->getArguments() != [
@@ -104,7 +104,7 @@ class PeriodicWorkerTest extends \PHPUnit_Framework_TestCase
                     if (!is_array($options)) {
                         return false;
                     }
-                    if (!isset($options['delay_manager_option_a']) || $options['delay_manager_option_a'] != 'a') {
+                    if (!isset($options['delay_manager_option_a']) || 'a' != $options['delay_manager_option_a']) {
                         return false;
                     }
                     if (!isset($options['time']) || !$options['time'] instanceof \DateTime) {
@@ -145,7 +145,7 @@ class PeriodicWorkerTest extends \PHPUnit_Framework_TestCase
                 if (!$job instanceof Job) {
                     return false;
                 }
-                if ($job->getName() != 'test_worker') {
+                if ('test_worker' != $job->getName()) {
                     return false;
                 }
                 if ($job->getArguments() != [

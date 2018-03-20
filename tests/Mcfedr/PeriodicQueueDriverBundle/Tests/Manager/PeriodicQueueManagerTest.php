@@ -84,7 +84,7 @@ class PeriodicQueueManagerTest extends \PHPUnit_Framework_TestCase
                     if (!is_array($options)) {
                         return false;
                     }
-                    if (!isset($options['delay_manager_option_a']) || $options['delay_manager_option_a'] != 'a') {
+                    if (!isset($options['delay_manager_option_a']) || 'a' != $options['delay_manager_option_a']) {
                         return false;
                     }
                     if (!isset($options['time']) || !$options['time'] instanceof \DateTime) {
