@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Mcfedr\PeriodicQueueDriverBundle\Manager;
 
 use Mcfedr\PeriodicQueueDriverBundle\Queue\PeriodicJob;

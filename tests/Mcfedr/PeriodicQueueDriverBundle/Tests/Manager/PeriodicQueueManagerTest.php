@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Mcfedr\PeriodicQueueDriverBundle\Tests\Manager;
 
 use Mcfedr\PeriodicQueueDriverBundle\Manager\PeriodicQueueManager;
@@ -7,9 +9,10 @@ use Mcfedr\PeriodicQueueDriverBundle\Queue\PeriodicJob;
 use Mcfedr\PeriodicQueueDriverBundle\Worker\PeriodicWorker;
 use Mcfedr\QueueManagerBundle\Manager\QueueManagerRegistry;
 use Mcfedr\QueueManagerBundle\Queue\Job;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Container;
 
-class PeriodicQueueManagerTest extends \PHPUnit_Framework_TestCase
+class PeriodicQueueManagerTest extends TestCase
 {
     /**
      * @var PeriodicQueueManager

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Mcfedr\PeriodicQueueDriverBundle\Tests\Worker;
 
 use Carbon\Carbon;
@@ -8,8 +10,9 @@ use Mcfedr\QueueManagerBundle\Exception\UnrecoverableJobException;
 use Mcfedr\QueueManagerBundle\Manager\QueueManagerRegistry;
 use Mcfedr\QueueManagerBundle\Queue\Job;
 use Mcfedr\QueueManagerBundle\Runner\JobExecutor;
+use PHPUnit\Framework\TestCase;
 
-class PeriodicWorkerTest extends \PHPUnit_Framework_TestCase
+class PeriodicWorkerTest extends TestCase
 {
     /**
      * @var PeriodicWorker

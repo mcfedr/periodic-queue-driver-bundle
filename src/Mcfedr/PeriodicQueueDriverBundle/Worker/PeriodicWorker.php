@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Mcfedr\PeriodicQueueDriverBundle\Worker;
 
 use Carbon\Carbon;
@@ -66,7 +68,7 @@ class PeriodicWorker implements InternalWorker
      *
      * @return \DateTime
      */
-    public static function nextRun($periodLength)
+    public static function nextRun(int $periodLength): \DateTime
     {
         list($startOfNextPeriod, $endOfNextPeriod) = self::nextPeriod($periodLength);
         $time = random_int($startOfNextPeriod, $endOfNextPeriod);
@@ -79,10 +81,10 @@ class PeriodicWorker implements InternalWorker
      *
      * @return int[] 0 is start and 1 is the end as timestamps
      */
-    public static function nextPeriod($periodLength)
+    public static function nextPeriod(int $periodLength): array
     {
         $now = Carbon::now()->timestamp;
-        $startOfNextPeriod = ceil($now / $periodLength) * $periodLength;
+        $startOfNextPeriod = (int) ceil($now / $periodLength) * $periodLength;
 
         return [$startOfNextPeriod + 1, $startOfNextPeriod + $periodLength];
     }

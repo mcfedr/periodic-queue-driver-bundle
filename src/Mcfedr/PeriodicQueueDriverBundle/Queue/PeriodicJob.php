@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Mcfedr\PeriodicQueueDriverBundle\Queue;
 
 use Mcfedr\QueueManagerBundle\Queue\AbstractJob;
@@ -25,10 +27,8 @@ class PeriodicJob extends AbstractJob
 
     /**
      * Generate tokens for a new job.
-     *
-     * @return array
      */
-    public static function generateJobTokens()
+    public static function generateJobTokens(): array
     {
         return [
             'token' => Uuid::uuid4()->toString(),
@@ -39,22 +39,20 @@ class PeriodicJob extends AbstractJob
     /**
      * @return string
      */
-    public function getJobToken()
+    public function getJobToken(): string
     {
         return $this->jobTokens['token'];
     }
 
-    public function getArguments()
+    public function getArguments(): array
     {
         return array_merge(parent::getArguments(), ['job_tokens' => $this->getJobTokens()]);
     }
 
     /**
      * Get the next run of this job.
-     *
-     * @return PeriodicJob
      */
-    public function generateNextJob()
+    public function generateNextJob(): PeriodicJob
     {
         $tokens = $this->getJobTokens();
         $tokens['token'] = $tokens['next_token'];
@@ -63,10 +61,7 @@ class PeriodicJob extends AbstractJob
         return new self($this->getName(), $this->getArguments(), $tokens);
     }
 
-    /**
-     * @return array
-     */
-    public function getJobTokens()
+    public function getJobTokens(): array
     {
         return $this->jobTokens;
     }

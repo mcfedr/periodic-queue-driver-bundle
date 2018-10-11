@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Mcfedr\PeriodicQueueDriverBundle\DependencyInjection;
 
 use Mcfedr\PeriodicQueueDriverBundle\Manager\PeriodicQueueManager;
